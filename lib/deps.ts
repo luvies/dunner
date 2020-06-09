@@ -12,9 +12,9 @@ export {
   green,
   magenta,
   red,
-} from "https://deno.land/std@0.55.0/fmt/colors.ts";
-export { ensureDir } from "https://deno.land/std@0.55.0/fs/ensure_dir.ts";
-export { globToRegExp } from "https://deno.land/std@0.55.0/path/glob.ts";
+} from "https://deno.land/std@0.56.0/fmt/colors.ts";
+export { ensureDir } from "https://deno.land/std@0.56.0/fs/ensure_dir.ts";
+export { globToRegExp } from "https://deno.land/std@0.56.0/path/glob.ts";
 export {
   BinaryFlag,
   EarlyExitFlag,
