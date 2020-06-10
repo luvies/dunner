@@ -103,10 +103,6 @@ export class Task {
    */
   public children: TaskBatchTree;
 
-  /**
-   * The path to get to this task.
-   */
-  private readonly path: Namespace;
   private readonly files: {
     input: readonly string[];
     output: readonly string[];
@@ -118,11 +114,11 @@ export class Task {
      */
     public name: string,
     private config: TaskDefinition,
-    path?: Namespace,
+    /**
+     * The path to get to this task.
+     */
+    path: Namespace = Namespace.root,
   ) {
-    // make sure we have a path
-    this.path = path = path ?? Namespace.root;
-
     // validate task name
     if (!name) {
       throw new TaskError(
@@ -274,10 +270,7 @@ export class Task {
       // await regardless, since void results can be awaited
       // (they just return immediately)
       await this.config.execute(
-        {
-          ns: this.path,
-          match,
-        },
+        { match },
         ...args,
       );
     }

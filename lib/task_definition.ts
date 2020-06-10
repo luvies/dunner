@@ -1,5 +1,3 @@
-import { Namespace } from "./namespace.ts";
-
 /**
  * The kind of matching to apply to the target name.
  */
@@ -11,14 +9,9 @@ export type TaskMatch = "exact" | "regex" | "glob";
 export type TaskDefinitionBatch = Record<string, TaskDefinition>;
 
 /**
- * This object provides various properties of the current execution that
- * can be used for more complex execute functions.
+ * Provides the current execution information.
  */
 export interface ExecuteInfo {
-  /**
-   * The current namespace that the target is executing in.
-   */
-  ns: Namespace;
   /**
    * The match array for the target name. For exact matched targets, it is a length 1
    * array with the full match at index 0, for regex/glob matched targets, it is the RegExpMatchArray

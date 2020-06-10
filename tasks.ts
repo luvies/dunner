@@ -10,8 +10,8 @@ run({
 
   target1: {
     desc: "target 1",
-    async execute({ ns, match }, ...args) {
-      console.log(this.desc, ns, match, args);
+    async execute({ match }, ...args) {
+      console.log(this.desc, match, args);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       console.log(this.desc, "timeout");
     },
