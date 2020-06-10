@@ -14,7 +14,7 @@ interface TestData {
   conf: TaskDefinition;
   executor: TaskExecutor;
   executions: Execution[];
-  exec(ns?: string, args?: string[] | undefined): Promise<void>;
+  exec(ns: string, args?: string[] | undefined): Promise<void>;
 }
 
 function getTestData(): TestData {
@@ -26,7 +26,7 @@ function getTestData(): TestData {
     };
   const conf = taskSample(execute);
   const executor = new TaskExecutor(Task.processTaskConfig(conf));
-  const exec = async (ns = "", args?: string[]) => {
+  const exec = async (ns: string, args?: string[]) => {
     let argString = "";
     if (typeof args !== "undefined") {
       argString = `[${args.join(",")}]`;
@@ -52,14 +52,14 @@ Deno.test({
 });
 
 Deno.test({
-  name: "TaskExecutor.execute should execute root as empty name target",
+  name: "TaskExecutor.execute should not execute root as empty name target",
   async fn() {
     const { exec, executions } = getTestData();
 
-    await exec();
+    await exec("default");
 
     assertEquals(executions, [
-      { target: "", args: [] },
+      { target: "default", args: [] },
     ]);
   },
 });

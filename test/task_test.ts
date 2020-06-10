@@ -1,5 +1,5 @@
 import { Task } from "../lib/task.ts";
-import { assert, assertEquals } from "./test_deps.ts";
+import { assert, assertEquals, assertThrows } from "./test_deps.ts";
 
 Deno.test({
   name: "Task.constructor",
@@ -7,6 +7,39 @@ Deno.test({
     const task = new Task("test", {});
     assert(task instanceof Task);
     assertEquals(task.name, "test");
+  },
+});
+
+Deno.test({
+  name: "Task.constructor should prevent empty names",
+  fn() {
+    assertThrows(() => new Task("", {}), undefined, "Empty task name");
+  },
+});
+
+Deno.test({
+  name: "Task.constructor should prevent badly named dependencies",
+  fn() {
+    assertThrows(
+      () => new Task("task", { deps: "" }),
+      undefined,
+      "cannot be an empty string",
+    );
+    assertThrows(
+      () => new Task("task", { deps: [""] }),
+      undefined,
+      "cannot be an empty string",
+    );
+    assertThrows(
+      () => new Task("task", { deps: ":" }),
+      undefined,
+      "':' is not a valid dependency",
+    );
+    assertThrows(
+      () => new Task("task", { deps: [":"] }),
+      undefined,
+      "':' is not a valid dependency",
+    );
   },
 });
 

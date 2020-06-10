@@ -4,7 +4,7 @@ export function taskSample(
   execute: (target: any) => (info: ExecuteInfo, ...args: string[]) => void,
 ): TaskDefinitionBatch {
   return {
-    "": { execute: execute("") },
+    default: { execute: execute("default") },
     1: {
       execute: execute(1),
       children: {
