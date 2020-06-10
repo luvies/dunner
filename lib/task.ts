@@ -151,7 +151,13 @@ export class Task {
       if (dep === "") {
         throw new TaskError("Dependency cannot be an empty string");
       }
-      this.deps.push(baseNs.resolve(dep));
+
+      const depNs = baseNs.resolve(dep);
+      if (depNs.isRoot) {
+        throw new TaskError(`'${depNs}' is not a valid dependency`);
+      }
+
+      this.deps.push(depNs);
     }
 
     // convert file options

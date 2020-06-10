@@ -199,7 +199,6 @@ run({
       "internal",
       ":crash:test",
       ":target3",
-      ":",
       ":regex.Re",
       ":custom-match.m",
     ],
