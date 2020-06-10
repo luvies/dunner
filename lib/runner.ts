@@ -67,9 +67,11 @@ export class Runner {
 
       // if not suppressed, output the execution time
       if (!config.quiet) {
-        let time: string | number = diff / 1000;
+        let time: string | number = Math.round(diff) / 1000;
         if (time >= 60) {
-          time = `${Math.round(time / 60)}m ${time % 60}`;
+          const mins = Math.round(time / 60);
+          const secs = time % 60;
+          time = `${mins}m ${secs}`;
         }
         log(dim(
           `${useEmoji("✨  ")}Task executed in ${time}s`,
