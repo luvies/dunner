@@ -8,8 +8,9 @@ import {
 import { config } from "./config.ts";
 import { dim, FormatTreeOptions, formatTreeString, TreeNode } from "./deps.ts";
 import { Namespace } from "./namespace.ts";
-import { rootTaskIndex, rootTaskName, Task, TaskBatchTree } from "./task.ts";
+import { defaultTask, Task, TaskBatchTree } from "./task.ts";
 import { TaskDefinitionBatch } from "./task_definition.ts";
+import { TaskError } from "./task_error.ts";
 import { DependencyNode, TaskExecutor } from "./task_executor.ts";
 import { log, useEmoji } from "./utils.ts";
 
@@ -55,8 +56,8 @@ export class Runner {
 
       // if no task was given, attempt to run the default task
       // if it doesn't exist, then the user has likely done something wrong
-      if (!args.tasks.length) {
-        names.push(Namespace.root.toString());
+      if (names.length === 0) {
+        names.push(defaultTask);
       }
 
       // run with the given arguments while tracking execution time
@@ -95,8 +96,18 @@ export class Runner {
    * @param names The names tasks to run.
    */
   public async run(names: string[]): Promise<void> {
-    for (const name of names) {
-      await this.executor.execute(Namespace.root.resolve(name));
+    const nss = names.map((name) => {
+      const n = Namespace.root.resolve(name);
+
+      if (n.isRoot) {
+        throw new TaskError(`'${n}' is not a valid task`);
+      }
+
+      return n;
+    });
+
+    for (const ns of nss) {
+      await this.executor.execute(ns);
     }
   }
 
@@ -114,11 +125,6 @@ export class Runner {
           ...tasks.glob.map((gb) => gb.task),
         ]
       ) {
-        // exclude root node
-        if (!task.name) {
-          continue;
-        }
-
         // build node
         const node: TreeNode = {
           text: formatTaskName(task.name, task),
@@ -136,18 +142,7 @@ export class Runner {
     };
 
     // build tree
-    let tree: TreeNode | TreeNode[] = processTasks(this.tasks);
-    const root = this.tasks.exact.get(rootTaskIndex);
-    if (root) {
-      tree = {
-        text: formatTaskName(
-          rootTaskName,
-          root,
-        ),
-        extra: root.desc,
-        children: tree,
-      };
-    }
+    const tree = processTasks(this.tasks);
 
     // return formatted tree
     return formatTreeString(tree, formatTreeOpts);

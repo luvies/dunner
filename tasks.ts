@@ -2,14 +2,16 @@
 import { exec, log, run, sh, TaskError } from "./mod.ts";
 
 run({
-  "": {
-    desc: "empty",
+  default: {
+    execute() {
+      console.log("default task");
+    },
   },
 
   target1: {
     desc: "target 1",
-    async execute() {
-      console.log(this.desc, arguments);
+    async execute({ ns, match }, ...args) {
+      console.log(this.desc, ns, match, args);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       console.log(this.desc, "timeout");
     },
@@ -138,12 +140,6 @@ run({
           },
         },
       },
-    },
-  },
-
-  default: {
-    execute() {
-      console.log("default task");
     },
   },
 

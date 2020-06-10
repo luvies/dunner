@@ -3,15 +3,7 @@ import { Namespace, namespaceParent, namespaceSeparator } from "./namespace.ts";
 import { TaskDefinition, TaskDefinitionBatch } from "./task_definition.ts";
 import { TaskError } from "./task_error.ts";
 
-/**
- * The index of the root task.
- */
-export const rootTaskIndex = "";
-
-/**
- * The display name of the root task.
- */
-export const rootTaskName = "root";
+export const defaultTask = ":default";
 
 /**
  * A batch of tasks that are using exact names.
@@ -132,9 +124,9 @@ export class Task {
     this.path = path = path ?? Namespace.root;
 
     // validate task name
-    if (!path.isRoot && !name) {
+    if (!name) {
       throw new TaskError(
-        "Empty task name not allowed other than in root config",
+        "Empty task name not allowed in config",
       );
     }
     if (name.includes(namespaceSeparator)) {

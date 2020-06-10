@@ -1,5 +1,5 @@
 import { Namespace } from "./namespace.ts";
-import { rootTaskIndex, rootTaskName, Task, TaskBatchTree } from "./task.ts";
+import { Task, TaskBatchTree } from "./task.ts";
 import { TaskError } from "./task_error.ts";
 
 /**
@@ -48,6 +48,14 @@ export interface DependencyNode {
 }
 
 /**
+ * Contains the result of the task search.
+ */
+interface TaskSearchResult {
+  task: Task;
+  match: string[];
+}
+
+/**
  * Provides methods for executing a task and its dependencies.
  */
 export class TaskExecutor {
@@ -88,7 +96,7 @@ export class TaskExecutor {
   ): [DependencyNode, boolean] {
     // current node
     const node: DependencyNode = {
-      dispName: ns.isRoot ? rootTaskName : ns.toString(true),
+      dispName: ns.toString(true),
       execData: this.getTask(ns),
       leaves: [],
       execute: false,
@@ -176,34 +184,13 @@ export class TaskExecutor {
    * @returns The resolved task, its arguments, and the matched name.
    */
   private getTask(name: Namespace): NodeExecData {
-    if (name.isRoot) {
-      const exact = this.tasks.exact.get(rootTaskIndex);
-      if (!exact) {
-        throw new TaskError("Unable to find default task");
-      }
-      return {
-        task: exact,
-        args: name.args,
-        match: [""],
-      };
-    } else {
-      // set up current state
-      let ctask: Task;
-      let cmatch: string[];
-      let tasks: TaskBatchTree = this.tasks;
+    const { task, match } = this.searchForTask(name.names, this.tasks, name);
 
-      // search for task in each part of the namespace
-      for (const cns of name.names) {
-        // perform search
-        [ctask, cmatch, tasks] = this.searchForTask(cns, tasks, name);
-      }
-
-      return {
-        task: ctask!,
-        args: name.args,
-        match: cmatch!,
-      };
-    }
+    return {
+      task,
+      args: name.args,
+      match,
+    };
   }
 
   /**
@@ -216,24 +203,30 @@ export class TaskExecutor {
    * @returns A tuple with the found Task, TaskMatchData and next TaskBatchTree object.
    */
   private searchForTask(
-    cns: string,
+    path: string[],
     tasks: TaskBatchTree,
     name: Namespace,
-  ): [Task, string[], TaskBatchTree] {
-    const match: string[] = [cns];
+  ): TaskSearchResult {
+    const [part, ...rest] = path;
+    const match: string[] = [part];
+
+    const buildOrReturn = (task: Task, mch: string[]): TaskSearchResult =>
+      rest.length === 0
+        ? { task, match: mch }
+        : this.searchForTask(rest, task.children, name);
 
     // Search for exact matches first.
-    const exact = tasks.exact.get(cns);
+    const exact = tasks.exact.get(part);
     if (exact) {
-      return [exact, match, exact.children];
+      return buildOrReturn(exact, match);
     }
 
     // Search for regex then glob matches.
     for (const ctasks of [tasks.regex, tasks.glob]) {
       for (const task of ctasks) {
-        const rmatch = cns.match(task.rule);
+        const rmatch = part.match(task.rule);
         if (rmatch) {
-          return [task.task, rmatch, task.task.children];
+          return buildOrReturn(task.task, rmatch);
         }
       }
     }
