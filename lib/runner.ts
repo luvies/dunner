@@ -6,7 +6,12 @@ import {
   printTaskColorInfo,
 } from "./colors.ts";
 import { config } from "./config.ts";
-import { dim, FormatTreeOptions, formatTreeString, TreeNode } from "./deps.ts";
+import {
+  FormatTreeOptions,
+  formatTreeString,
+  TreeNode,
+} from "./deps/format_tree.ts";
+import { dim } from "./deps/std.ts";
 import { Namespace } from "./namespace.ts";
 import { defaultTask, Task, TaskBatchTree } from "./task.ts";
 import { TaskDefinitionBatch } from "./task_definition.ts";

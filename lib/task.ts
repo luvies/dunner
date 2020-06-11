@@ -1,4 +1,6 @@
-import { formatList, globToRegExp, tryGetLStat } from "./deps.ts";
+import { formatList } from "./deps/format_list.ts";
+import { globToRegExp } from "./deps/std.ts";
+import { tryGetLStat } from "./deps/utils.ts";
 import { Namespace, namespaceParent, namespaceSeparator } from "./namespace.ts";
 import { TaskDefinition, TaskDefinitionBatch } from "./task_definition.ts";
 import { TaskError } from "./task_error.ts";

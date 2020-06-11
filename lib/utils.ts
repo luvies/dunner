@@ -1,5 +1,5 @@
 import { config } from "./config.ts";
-import { decode } from "./deps.ts";
+import { decode } from "./deps/std.ts";
 import { ExecError } from "./exec_error.ts";
 
 /**

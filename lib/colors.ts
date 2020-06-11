@@ -1,4 +1,4 @@
-import { blue, dim, green, magenta, red } from "./deps.ts";
+import { blue, dim, green, magenta, red } from "./deps/std.ts";
 import { Task } from "./task.ts";
 import { log } from "./utils.ts";
 /**

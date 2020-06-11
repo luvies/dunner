@@ -6,7 +6,7 @@ import {
   EarlyExitFlag,
   PartialOption,
   Text,
-} from "./deps.ts";
+} from "./deps/args.ts";
 import { version } from "./version.ts";
 
 const parser = args

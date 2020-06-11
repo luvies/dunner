@@ -1,4 +1,4 @@
-import { formatList } from "./deps.ts";
+import { formatList } from "./deps/format_list.ts";
 import { TaskError } from "./task_error.ts";
 
 export const namespaceSeparator = ":";
