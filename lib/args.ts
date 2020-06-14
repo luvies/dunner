@@ -18,7 +18,7 @@ const parser = args
       console.log("Usage: tasks.ts <options> [...tasks]");
       console.log("  [...tasks]");
       console.log(
-        "    The tasks to execute (can be omitted if an option is given that prevents task execution)",
+        "    The tasks to execute (if omitted then the task named `default` is implied)",
       );
       console.log();
       console.log(parser.help());
