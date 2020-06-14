@@ -40,19 +40,29 @@ export function useEmoji(emoji: string): string {
  * This is just the standard `Deno.RunOptions` without the `cmd`
  * property, since this is given in explicitly.
  */
-export type ExecOptions = Omit<Deno.RunOptions, "cmd">;
+export interface ExecOptions {
+  cwd?: string;
+  env?: {
+    [key: string]: string;
+  };
+  stdout?: "inherit" | "piped" | "null" | number;
+  stderr?: "inherit" | "piped" | "null" | number;
+  stdin?: "inherit" | "piped" | "null" | number;
+}
 
 /**
  * The result of the command.
  * 
  * If stdout or stderr were set to `piped`, then these are set here.
  */
-export interface ExecResult {
-  stdout?: string;
-  stderr?: string;
+export interface ExecResult<T extends ExecOptions> {
+  stdout: T["stdout"] extends "piped" ? string : undefined;
+  stderr: T["stderr"] extends "piped" ? string : undefined;
 }
 
-async function readAll(buf?: Deno.Reader): Promise<string | undefined> {
+async function readAll(
+  buf: Deno.Reader | undefined | null,
+): Promise<string | undefined> {
   if (buf) {
     return decode(await Deno.readAll(buf));
   } else {
@@ -68,21 +78,16 @@ async function readAll(buf?: Deno.Reader): Promise<string | undefined> {
  * @param opts Extra options to pass into `Deno.run`.
  * @returns The result of the command.
  */
-export async function exec(
+export async function exec<T extends ExecOptions>(
   cmd: string[],
-  opts?: ExecOptions,
-): Promise<ExecResult> {
+  opts?: T,
+): Promise<ExecResult<T>> {
   const proc = Deno.run({ cmd, ...opts });
 
   try {
-    const [res, stdout, stderr] = await Promise.all<
-      Deno.ProcessStatus,
-      string | undefined,
-      string | undefined
-    >(
+    const [res, stdout, stderr] = await Promise.all(
       [proc.status(), readAll(proc.stdout), readAll(proc.stderr)],
     );
-
     if (!res.success) {
       throw new ExecError(cmd, res.code);
     }
@@ -90,7 +95,7 @@ export async function exec(
     return {
       stdout,
       stderr,
-    };
+    } as ExecResult<T>;
   } finally {
     proc.close();
   }
@@ -103,10 +108,10 @@ export async function exec(
  * @param opts Same as `exec`.
  * @returns The result of the command.
  */
-export async function sh(
+export async function sh<T extends ExecOptions>(
   cmd: string,
-  opts?: ExecOptions,
-): Promise<ExecResult> {
+  opts?: T,
+): Promise<ExecResult<T>> {
   // Derived from https://deno.land/x/drake/lib/utils.ts
 
   if (Deno.build.os === "windows") {
