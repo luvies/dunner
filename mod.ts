@@ -1,31 +1,8 @@
-export * from "./lib/mod.ts";
-import {
-  config,
-  logError,
-  Runner,
-  TaskDefinitionBatch,
-  TaskError,
-} from "./lib/mod.ts";
-
-export async function run(tasks: TaskDefinitionBatch): Promise<void> {
-  try {
-    await Runner.run(Deno.args, tasks);
-  } catch (err) {
-    let exitCode = 3;
-
-    // Exit code 1 means TaskError was thrown, exit code 3 is all other errors.
-    if (err instanceof TaskError) {
-      // if a TakeError was thrown, then it was intentional
-      err.log(config.trace);
-      exitCode = 1;
-    } else {
-      logError("Unhandled exception, execution aborted");
-    }
-
-    // check trace option and output stack if it is set
-    if (err.stack && config.trace) {
-      logError("Stack trace:");
-      logError(err.stack);
-    }
-  }
-}
+export * from "./lib/config.ts";
+export * from "./lib/exec_error.ts";
+export * from "./lib/run.ts";
+export * from "./lib/runner.ts";
+export * from "./lib/task_definition.ts";
+export * from "./lib/task_error.ts";
+export * from "./lib/utils.ts";
+export * from "./lib/version.ts";
