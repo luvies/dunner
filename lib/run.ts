@@ -4,9 +4,18 @@ import { TaskDefinitionBatch } from "./task_definition.ts";
 import { TaskError } from "./task_error.ts";
 import { logError } from "./utils.ts";
 
-export async function run(tasks: TaskDefinitionBatch): Promise<void> {
+/**
+ * Runs the task runner using the given arguments, or from `Deno.args` by default.
+ * 
+ * @param tasks The defined tasks.
+ * @param args Allows manually passing in arguments to run. Will override `Deno.args`.
+ */
+export async function run(
+  tasks: TaskDefinitionBatch,
+  args?: readonly string[],
+): Promise<void> {
   try {
-    await Runner.run(Deno.args, tasks);
+    await Runner.run(args ?? Deno.args, tasks);
   } catch (err) {
     let exitCode = 3;
 
