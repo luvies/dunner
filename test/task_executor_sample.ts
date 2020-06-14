@@ -1,4 +1,4 @@
-import { ExecuteInfo, TaskDefinitionBatch } from "../lib/mod.ts";
+import { ExecuteInfo, TaskDefinitionBatch } from "../mod.ts";
 
 export function taskSample(
   execute: (target: any) => (info: ExecuteInfo, ...args: string[]) => void,

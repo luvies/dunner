@@ -1,7 +1,7 @@
-import { ExecuteInfo, TaskDefinition } from "../lib/mod.ts";
 import { Namespace } from "../lib/namespace.ts";
 import { Task } from "../lib/task.ts";
 import { TaskExecutor } from "../lib/task_executor.ts";
+import { ExecuteInfo, TaskDefinition } from "../mod.ts";
 import { taskSample } from "./task_executor_sample.ts";
 import { assert, assertEquals } from "./test_deps.ts";
 
