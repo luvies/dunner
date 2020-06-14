@@ -7,7 +7,7 @@ import { ExecError } from "./exec_error.ts";
    *
    * @param messages The list of objects to print.
    */
-export function log(...messages: any[]): void {
+export function log(...messages: unknown[]): void {
   if (!config.quiet) {
     console.log(...messages);
   }
@@ -18,7 +18,7 @@ export function log(...messages: any[]): void {
    *
    * @param messages The list of objects to print.
    */
-export function logError(...messages: any[]): void {
+export function logError(...messages: unknown[]): void {
   if (!config.quiet) {
     console.error(...messages);
   }

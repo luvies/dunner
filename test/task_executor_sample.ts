@@ -1,6 +1,7 @@
 import { ExecuteInfo, TaskDefinitionBatch } from "../mod.ts";
 
 export function taskSample(
+  // deno-lint-ignore no-explicit-any
   execute: (target: any) => (info: ExecuteInfo, ...args: string[]) => void,
 ): TaskDefinitionBatch {
   return {

@@ -63,7 +63,7 @@ export class Task {
       const getTask = (tname: string) => new Task(tname, taskConf, path);
 
       switch (taskConf.match) {
-        case "regex":
+        case "regex": {
           // convert string key into regex object
           const match = name.match(/^\/(.*)\/(.*)$/);
           if (!match) {
@@ -76,6 +76,7 @@ export class Task {
             task: getTask(name),
           });
           break;
+        }
         case "glob":
           glob.push({
             rule: globToRegExp(name, { extended: true, globstar: true }),

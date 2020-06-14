@@ -8,7 +8,7 @@ export class TaskError extends Error {
   public name: string = "TaskError";
 
   public constructor(
-    message?: any,
+    message?: string,
     /**
      * If this error was caused by another one, it can be stored here for printing to
      * stderr later.

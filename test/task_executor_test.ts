@@ -20,6 +20,7 @@ interface TestData {
 function getTestData(): TestData {
   let executions: Execution[] = [];
 
+  // deno-lint-ignore no-explicit-any
   const execute = (target: any) =>
     (_: ExecuteInfo, ...args: string[]) => {
       executions.push({ target: target.toString(), args });
